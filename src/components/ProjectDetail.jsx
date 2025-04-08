@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft, ExternalLink, Github, Code2, Star,
+  ArrowLeft, ExternalLink, Github, Figma, Code2, Star,
   ChevronRight, Layers, Layout, Globe, Package, Cpu, Code,
 } from "lucide-react";
 import Swal from 'sweetalert2';
@@ -19,7 +19,7 @@ const TECH_ICONS = {
 
 const TechBadge = ({ tech }) => {
   const Icon = TECH_ICONS[tech] || TECH_ICONS["default"];
-  
+
   return (
     <div className="group relative overflow-hidden px-3 py-2 md:px-4 md:py-2.5 bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-xl border border-blue-500/10 hover:border-blue-500/30 transition-all duration-300 cursor-default">
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-500" />
@@ -100,21 +100,30 @@ const ProjectDetails = () => {
   const [project, setProject] = useState(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
+  const isWorkEx = window.location.pathname.includes('/workex/');
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Try to find in projects first, then in workex
     const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-    const selectedProject = storedProjects.find((p) => String(p.id) === id);
+    const storedWorkex = JSON.parse(localStorage.getItem("workex")) || [];
     
-    if (selectedProject) {
-      const enhancedProject = {
-        ...selectedProject,
-        Features: selectedProject.Features || [],
-        TechStack: selectedProject.TechStack || [],
-        Github: selectedProject.Github || 'https://github.com/EkiZR',
-      };
-      setProject(enhancedProject);
+    let selectedItem;
+    if (isWorkEx) {
+      selectedItem = storedWorkex.find((w) => String(w.id) === id);
+    } else {
+      selectedItem = storedProjects.find((p) => String(p.id) === id);
     }
-  }, [id]);
+
+    if (selectedItem) {
+      const enhancedItem = {
+        ...selectedItem,
+        Features: selectedItem.Features || [],
+        TechStack: selectedItem.TechStack || [],
+      };
+      setProject(enhancedItem);
+    }
+  }, [id, isWorkEx]);
 
   if (!project) {
     return (
@@ -150,13 +159,13 @@ const ProjectDetails = () => {
               <span>Back</span>
             </button>
             <div className="flex items-center space-x-1 md:space-x-2 text-sm md:text-base text-white/50">
-              <span>Projects</span>
+              <span>{isWorkEx ? "Work Experience" : "Projects"}</span>
               <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
               <span className="text-white/90 truncate">{project.Title}</span>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-16">
+          <div className="grid lg:grid-cols-2 gap-10 md:gap-16">
             <div className="space-y-6 md:space-y-10 animate-slideInLeft">
               <div className="space-y-4 md:space-y-6">
                 <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight">
@@ -174,7 +183,7 @@ const ProjectDetails = () => {
                 </p>
               </div>
 
-              <ProjectStats project={project} />
+              {/* <ProjectStats project={project} /> */}
 
               <div className="flex flex-wrap gap-3 md:gap-4">
                 {/* Action buttons */}
@@ -185,11 +194,11 @@ const ProjectDetails = () => {
                   className="group relative inline-flex items-center space-x-1.5 md:space-x-2 px-4 md:px-8 py-2.5 md:py-4 bg-gradient-to-r from-blue-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 text-blue-300 rounded-xl transition-all duration-300 border border-blue-500/20 hover:border-blue-500/40 backdrop-blur-xl overflow-hidden text-sm md:text-base"
                 >
                   <div className="absolute inset-0 translate-y-[100%] bg-gradient-to-r from-blue-600/10 to-purple-600/10 transition-transform duration-300 group-hover:translate-y-[0%]" />
-                  <ExternalLink className="relative w-4 h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
-                  <span className="relative font-medium">Live Demo</span>
+                  <Figma className="relative w-4 h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
+                  <span className="relative font-medium">Figma Link</span>
                 </a>
 
-                <a
+                {/* <a
                   href={project.Github}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -199,10 +208,10 @@ const ProjectDetails = () => {
                   <div className="absolute inset-0 translate-y-[100%] bg-gradient-to-r from-purple-600/10 to-pink-600/10 transition-transform duration-300 group-hover:translate-y-[0%]" />
                   <Github className="relative w-4 h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
                   <span className="relative font-medium">Github</span>
-                </a>
+                </a> */}
               </div>
 
-              <div className="space-y-4 md:space-y-6">
+              {/* <div className="space-y-4 md:space-y-6">
                 <h3 className="text-lg md:text-xl font-semibold text-white/90 mt-[3rem] md:mt-0 flex items-center gap-2 md:gap-3">
                   <Code2 className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
                   Technologies Used
@@ -216,12 +225,12 @@ const ProjectDetails = () => {
                 ) : (
                   <p className="text-sm md:text-base text-gray-400 opacity-50">No technologies added.</p>
                 )}
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-6 md:space-y-10 animate-slideInRight">
               <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
-              
+
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <img
                   src={project.Img}
@@ -230,10 +239,11 @@ const ProjectDetails = () => {
                   onLoad={() => setIsImageLoaded(true)}
                 />
                 <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/10 transition-colors duration-300 rounded-2xl" />
+
               </div>
 
               {/* Fitur Utama */}
-              <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 border border-white/10 space-y-6 hover:border-white/20 transition-colors duration-300 group">
+              {/* <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 border border-white/10 space-y-6 hover:border-white/20 transition-colors duration-300 group">
                 <h3 className="text-xl font-semibold text-white/90 flex items-center gap-3">
                   <Star className="w-5 h-5 text-yellow-400 group-hover:rotate-[20deg] transition-transform duration-300" />
                   Key Features
@@ -247,10 +257,25 @@ const ProjectDetails = () => {
                 ) : (
                   <p className="text-gray-400 opacity-50">No features added.</p>
                 )}
-              </div>
+              </div> */}
+            </div>
+          </div>
+          <div className="space-y-6 pt-10 md:space-y-10 animate-slideInRight">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-transparent opacity-0  transition-opacity duration-500" />
+              <img
+                src={project.Img2}
+                alt={project.Title}
+                // className="w-full  object-cover transform transition-transform duration-700 will-change-transform group-hover:scale-105"
+                onLoad={() => setIsImageLoaded(true)}
+              />
+              {/* <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/10 transition-colors duration-300 rounded-2xl" /> */}
             </div>
           </div>
         </div>
+
+
+
       </div>
 
       <style jsx>{`

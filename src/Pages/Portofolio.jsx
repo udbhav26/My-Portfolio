@@ -14,7 +14,7 @@ import TechStackIcon from "../components/TechStackIcon";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Certificate from "../components/Certificate";
-import { Code, Award, Boxes } from "lucide-react";
+import { Code, Award, Boxes, WandSparkles } from "lucide-react";
 
 // Separate ShowMore/ShowLess button component
 const ToggleButton = ({ onClick, isShowingMore }) => (
@@ -135,7 +135,7 @@ export default function FullWidthTabs() {
   const fetchData = useCallback(async () => {
     try {
       const projectCollection = collection(db, "projects");
-      const certificateCollection = collection(db, "certificates");
+      const certificateCollection = collection(db, "workex");
 
       const [projectSnapshot, certificateSnapshot] = await Promise.all([
         getDocs(projectCollection),
@@ -146,19 +146,24 @@ export default function FullWidthTabs() {
         id: doc.id,
         ...doc.data(),
         TechStack: doc.data().TechStack || [],
+        Img2: doc.data().Img2,
       }));
-
-      const certificateData = certificateSnapshot.docs.map((doc) => doc.data());
+      const certificateData = certificateSnapshot.docs.map((doc) => ({
+        id: doc.id, // Add this line to include the document ID
+        ...doc.data(),
+        Img2: doc.data().Img2,
+      }));
+      // const certificateData = certificateSnapshot.docs.map((doc) => doc.data());
 
       setProjects(projectData);
       setCertificates(certificateData);
 
-      // Store in localStorage
-      localStorage.setItem("projects", JSON.stringify(projectData));
-      localStorage.setItem("certificates", JSON.stringify(certificateData));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      // Store in localStorage with the correct keys
+    localStorage.setItem("projects", JSON.stringify(projectData));
+    localStorage.setItem("workex", JSON.stringify(certificateData));  // Change this line
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
   }, []);
 
   useEffect(() => {
@@ -196,7 +201,7 @@ export default function FullWidthTabs() {
           </span>
         </h2>
         <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base mt-2">
-          Explore my journey through projects, certifications, and technical expertise. 
+          Explore my journey through projects, work experience, and technical expertise. 
           Each section represents a milestone in my continuous learning path.
         </p>
       </div>
@@ -277,8 +282,8 @@ export default function FullWidthTabs() {
               {...a11yProps(0)}
             />
             <Tab
-              icon={<Award className="mb-2 w-5 h-5 transition-all duration-300" />}
-              label="Certificates"
+              icon={<WandSparkles className="mb-2 w-5 h-5 transition-all duration-300" />}
+              label="Work Experience"
               {...a11yProps(1)}
             />
             <Tab
@@ -305,10 +310,12 @@ export default function FullWidthTabs() {
                   >
                     <CardProject
                       Img={project.Img}
+                      Img2={project.Img2}
                       Title={project.Title}
                       Description={project.Description}
                       Link={project.Link}
                       id={project.id}
+                      type="project"
                     />
                   </div>
                 ))}
@@ -326,14 +333,22 @@ export default function FullWidthTabs() {
 
           <TabPanel value={value} index={1} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-3 md:gap-5 gap-4">
-                {displayedCertificates.map((certificate, index) => (
-                  <div
-                    key={index}
-                    data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
-                    data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
-                  >
-                    <Certificate ImgSertif={certificate.Img} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+                  {displayedCertificates.map((certificate, index) => (
+                    <div
+                      key={index}
+                      data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
+                      data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
+                    >
+                    <CardProject
+                      Img={certificate.Img}
+                      Img2={certificate.Img2}
+                      Title={certificate.Title}
+                      Description={certificate.Description}
+                      Link={certificate.Link}
+                      id={certificate.id}
+                      type="workex"
+                    />
                   </div>
                 ))}
               </div>

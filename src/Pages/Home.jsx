@@ -81,7 +81,7 @@ const WORDS = ["Human Computer Interaction Student", "MERN Stack Developer"];
 const TECH_STACK = ["Figma","AdobePS","Adobe Illustrator","React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/udbhav26" },
-  { icon: Linkedin, link: "linkedin.com/in/udbhav-mittal-113b9b25b/" },
+  { icon: Linkedin, link: "https://linkedin.com/in/udbhav-mittal-113b9b25b/" },
   { icon: Instagram, link: "https://www.instagram.com/udbhav_mittal?igsh=MzhzOTg2NHFtOTRz" }
 ];
 
